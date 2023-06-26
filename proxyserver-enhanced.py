@@ -23,7 +23,7 @@ tcpSerSock = socket(AF_INET, SOCK_STREAM)
 
 
 # Prepare a server socket
-#serverip = sys.argv[1] #from argument
+
 print(serverip +":"+ str(tcpSerPort))
 tcpSerSock.bind((serverip, tcpSerPort))
 tcpSerSock.listen(5)
@@ -36,7 +36,7 @@ while True:
     print('Received a connection from: ', addr)
     
 
-    message = tcpCliSock.recv(4096).decode()
+    message = tcpCliSock.recv(4096).decode('latin-1')
     print(message)
     
     # Extract the filename from the given message
@@ -50,8 +50,10 @@ while True:
         print('File Exists!')
 
         # ProxyServer finds a cache hit and generates a response message
-        tcpCliSock.send("HTTP/1.0 200 OK\r\n")
-        tcpCliSock.send("Content-Type:text/html\r\n")
+        ok_1 = "HTTP/1.0 200 OK\r\n"
+        ok_2 = "Content-Type:text/html\r\n"
+        tcpCliSock.send(ok_1.encode())
+        tcpCliSock.send(ok_2.encode())
 
         # Send the content of the requested file to the client
         for i in range(0, len(outputdata)):
@@ -72,9 +74,9 @@ while True:
             print('Host Name: ', hostn)
             try:
                 # Connect to the socket to port 80
-                #fill start 
+
                 c.connect((hostn, 80))
-                #fill end
+
                 print('Socket Has Connected to the Host at Port 80')
 
                 c.sendall(message.encode())
@@ -104,4 +106,3 @@ while True:
     # Close the socket and the server sockets
     tcpCliSock.close()
 tcpSerSock.close()
-
